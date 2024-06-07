@@ -36,13 +36,15 @@ async def process_urls(task_id: uuid.UUID, urls: list[str]):
 
         results = {}
         for url, status in await asyncio.gather(*[fetch_url(url) for url in urls]):
-            tasks[task_id].result.append(status)
+            tasks[task_id].result.append((status, url))
             if len(tasks[task_id].result) == len(urls):
                 tasks[task_id].status = "ready"
-            results[url] = status
+            results[url] = (status, url)
 
         return results
     
+
+
 
 @app.post("/api/v1/tasks/", response_model=Task, status_code=201)
 async def create_task(urls: list[str],background_tasks: BackgroundTasks):

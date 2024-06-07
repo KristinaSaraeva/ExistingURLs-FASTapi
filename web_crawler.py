@@ -22,17 +22,22 @@ def query_task_status(task_id):
             task_info = response.json()
             status = task_info["status"]
             result = task_info["result"]
-            print(f"Task status: {status}, Result: {result}")
+            print(f"Task status: {status}")
+            print("Result:")
+            for item in result:
+                print(*item, sep='\t')
             if status == "ready":
                 break
         else:
             print(f"Failed to query task status. Status code: {response.status_code}")
         time.sleep(5)  
 
+
+
 if __name__ == "__main__":
     queryable_urls = sys.argv[1:]
     if len(sys.argv) < 2:
-        print("Usage: python3 crawl.py <url1> <url2> <url3> ...")
+        print("Usage: python web_crawler.py <url1> <url2> <url3> ...")
         sys.exit(1)
     else:
         task_id = asyncio.run(submit_urls(queryable_urls))
